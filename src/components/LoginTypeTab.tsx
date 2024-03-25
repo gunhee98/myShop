@@ -1,6 +1,8 @@
 import { useContext } from "react";
 import styled, { css } from "styled-components";
-import LoginTypeContext from "../context/loginType";
+import LoginTypeContext from "../context/LoginTypeContext";
+import { useLocation } from "react-router-dom";
+
 const LoginTab = styled.div`
   display: flex;
   width: 100%;
@@ -30,6 +32,7 @@ const SellerTab = styled.button<{ sell: string }>`
 
 export default function LoginTypeTab() {
   const { state, actions } = useContext(LoginTypeContext);
+  const { pathname } = useLocation();
   const handleLoginType = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
@@ -43,10 +46,10 @@ export default function LoginTypeTab() {
   return (
     <LoginTab>
       <BuyerTab buy={state.loginType} name="buy" onClick={handleLoginType}>
-        구매회원 로그인
+        {pathname === "/signup" ? "구매회원가입" : "구매회원 로그인"}
       </BuyerTab>
       <SellerTab sell={state.loginType} name="sell" onClick={handleLoginType}>
-        판매회원 로그인
+        {pathname === "/signup" ? "판매회원가입" : "판매회원 로그인"}
       </SellerTab>
     </LoginTab>
   );
