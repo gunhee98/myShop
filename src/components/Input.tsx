@@ -14,6 +14,7 @@ const S_Input = styled.input<{ isFocus: boolean }>`
 interface InputProps {
   type: string;
   name: string;
+  placeholder: string;
   register: UseFormRegister<any>;
   registerOption: {
     required: string | boolean;
@@ -29,6 +30,7 @@ interface InputProps {
 export default function Input({
   type,
   name,
+  placeholder,
   register,
   registerOption,
 }: InputProps) {
@@ -44,7 +46,7 @@ export default function Input({
     <S_Input
       type={type}
       {...register(name, registerOption)}
-      placeholder={name}
+      placeholder={placeholder}
       name={name}
       onFocus={handleFocus}
       onBlur={handleBlur}

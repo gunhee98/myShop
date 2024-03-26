@@ -2,7 +2,8 @@ import Input from "./Input";
 import styled from "styled-components";
 import { signIn } from "../firebase/auth";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { appAuth } from "../firebase/config";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const Form = styled.form`
   width: 100%;
@@ -22,7 +23,7 @@ export const LoginButton = styled.button`
   font-weight: bold;
   cursor: pointer;
 `;
-const Incorrect = styled.p`
+export const Incorrect = styled.p`
   color: red;
   font-size: 1.6rem;
 `;
@@ -31,6 +32,8 @@ interface FormData {
   password: string;
 }
 export default function LoginForm() {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -38,8 +41,10 @@ export default function LoginForm() {
   } = useForm<FormData>();
 
   const loginSubmit: SubmitHandler<FormData> = async data => {
-    console.log(data);
-    await signIn(data);
+    const user = await signIn(data, setLoading);
+    if (user) {
+      navigate("/");
+    }
   };
 
   return (
@@ -47,18 +52,20 @@ export default function LoginForm() {
       <Input
         name="email"
         type="text"
+        placeholder="이메일을 입력해주세요"
         register={register}
-        registerOption={{ required: "아이디를 입력해주세요" }}
+        registerOption={{ required: "이메일를 입력해주세요" }}
       />
-      {errors.email && <Incorrect>{errors.email.message}</Incorrect>}
+      {errors.email && <Incorrect>* {errors.email.message}</Incorrect>}
       <Input
         name="password"
         type="password"
+        placeholder="비밀번호를 입력해주세요"
         register={register}
         registerOption={{ required: "비밀번호를 입력해주세요" }}
       />
-      {errors.password && <Incorrect>{errors.password.message}</Incorrect>}
-      <LoginButton>로그인</LoginButton>
+      {errors.password && <Incorrect>* {errors.password.message}</Incorrect>}
+      <LoginButton>{loading ? "로그인하는중..." : "로그인"}</LoginButton>
     </Form>
   );
 }
